@@ -1,4 +1,6 @@
-# Witwicky: An implementation of Transformer in PyTorch
+# Attach-Dictionary Extension of Witwicky: An implementation of Transformer in PyTorch
+
+[Xing Jie Zhong](), University of Notre Dame
 
 [Toan Q. Nguyen](http://tnq177.github.io), University of Notre Dame
 
