@@ -7,8 +7,6 @@
 An implementation of Vaswani et al.'s [Attention Is All You Need](https://papers.nips.cc/paper/7181-attention-is-all-you-need.pdf) with [PyTorch](https://pytorch.org). An [early version](https://github.com/tnq177/nmt_text_from_non_native_speaker) of this code was used in our paper [Neural Machine Translation of Text from Non-Native Speakers
 ](https://arxiv.org/abs/1808.06267).  
 
-It performs very well on both low-resource and high-resource translation tasks, sometimes 5 BLEU higher than other published Transformer baselines (see [Benchmarks](#benchmarks)), and it supports minibatched beam search decoding.
-
 This code has been tested with only Python 3.6 and PyTorch 1.0.
 
 ## Input and Preprocessing
@@ -19,19 +17,19 @@ The code expects bitext data with filenames
     dev.src_lang     dev.trg_lang
     test.src_lang    test.trg_lang
 
-My rule of thumb for data preprocessing (learned from fairseq's code) is:  
-
-* tokenize data
-* filter out sentences longer than 80 tokens
-* learn BPE
-* apply BPE
-* do not filter sentences by length again (that is, set `max_train_length` to something very high like 1000; see below).
+The following data preprocessing should happen first:  
+* clean dictionary data and seperate the headwords and definitions into two files
+* The dictionary can be either src_lang to src_lang or src_lang to trg_lang but not trg_lang to trg_lang
+* tokenize and/or segment all data excluding the dictionary headword file
+* learn BPE from training data
+* apply BPE to all files excluding the dictionary headword file
 
 ## Usage
 
 To train a new model:  
 * Write a new configuration function in ``configurations.py``  
 * Put preprocessed data in ``nmt/data/model_name`` or as configured in ``data_dir`` option in your configuration function  
+* Put the name of the processed dictionary headword file in ``src_dict_ent`` and dictionary definition file in ``src_dict_def``
 * Run: ``python3 -m nmt --proto config_name``  
 
 During training, the model is validated on the dev set, and the best checkpoint is saved to ``nmt/saved_models/model_name/model_name-SCORE.pth``.
