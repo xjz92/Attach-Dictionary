@@ -47,13 +47,14 @@ We support minibatched beam search, but currently it's quite ad-hoc. We assume t
 Options are set in `configurations.py`. Many are pretty important.
 The options that are added in this version (not found in witwicky) include:
 
-``skip''
-``dict_window'' 
-``dict_learned_pos''
-``apply_dict_all''
-``concate_pos''
-``split_pos_encoding''
-``thres''
+``skip`` This option negates adding any dictionary definitions this is false by default.
+``dict_window`` This is the maximum length of the any dictionary defintions attached, we find that 50 is a good number.
+``dict_learned_pos`` This 
+``apply_dict_all``
+``concate_pos``
+``split_pos_encoding``
+``src_dict_ent``
+``src_dict_def``
 
 ## References
 
