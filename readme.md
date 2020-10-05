@@ -47,14 +47,13 @@ We support minibatched beam search, but currently it's quite ad-hoc. We assume t
 Options are set in `configurations.py`. Many are pretty important.
 The options that are added in this version (not found in witwicky) include:
 
-``skip`` This option negates adding any dictionary definitions this is false by default.
-``dict_window`` This is the maximum length of the any dictionary defintions attached, we find that 50 is a good number.
-``dict_learned_pos`` This 
-``apply_dict_all``
-``concate_pos``
-``split_pos_encoding``
-``src_dict_ent``
-``src_dict_def``
+The ``skip`` option negates adding any dictionary definitions this is false by default.
+The ``dict_window`` option is the maximum length of the any dictionary defintions attached, we find that 50 is a good number.
+The ``dict_learned_pos`` option makes the postional embeddings of dictionary learned parameters if True and sinusoidal if false. Generally, we found the best results when ``learned_pos`` was True and ``dict_leanred_pos`` was False.
+The ``apply_dict_all`` option will attach dictionary definitions to all words instead of just UNKs. 
+The ``split_pos_encoding`` option will change the positional embeddings and dictionary positional embeddings such that regular position encoding will occupy the first 256 dimensions and dictionary position encodings will occupy the second 256 dimensions.
+The ``src_dict_ent`` option should be filled with the name of the dictionary headword file. That file should be in the same directory as the training data.
+The ``src_dict_def`` option should be filled with the name of the dictionary defintions file. That file should be in the same directory as the training data.
 
 ## References
 
