@@ -2,9 +2,7 @@
 
 [Xing Jie Zhong](), University of Notre Dame
 
-Witwicky Base for this comes from [Toan Q. Nguyen](http://tnq177.github.io), University of Notre Dame
-
-An extension of Witwicky https://github.com/tnq177/witwicky (please consult link for general instructions) to read in and attach defintions from a dictionary to the encoder. 
+Witwicky Base for this comes from [Toan Q. Nguyen](http://tnq177.github.io), University of Notre Dame https://github.com/tnq177/witwicky (please consult link for general instructions) to read in and attach defintions from a dictionary to the encoder. 
 
 This code has been tested with only Python 3.6 and PyTorch 1.0.
 
