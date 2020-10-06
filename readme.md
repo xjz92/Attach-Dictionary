@@ -1,4 +1,4 @@
-# Attach-Dictionary Extension of Witwicky: An implementation of Transformer in PyTorch
+# Attach-Dictionary Extension of Witwicky to attach dictionary definitions to unknown words inline in PyTorch
 
 [Xing Jie Zhong](), University of Notre Dame
 
@@ -53,6 +53,12 @@ The ``split_pos_encoding`` option will change the positional embeddings and dict
 The ``src_dict_ent`` option should be filled with the name of the dictionary headword file. That file should be in the same directory as the training data.
 The ``src_dict_def`` option should be filled with the name of the dictionary defintions file. That file should be in the same directory as the training data.
 
+## BPE version
+To run a BPE version of the code after applying BPE to all data files we recommend fusing headwords found in the headword file. The code we used to do this can be foudn in the ./nmt/data/
+
+## Dictionary files
+We share the dictionary files that were used in our paper in the folder ./nmt/data/
+
 ## References
 
 Parts of code/scripts are borrowed/inspired from:  
@@ -62,3 +68,4 @@ Parts of code/scripts are borrowed/inspired from:
 * https://github.com/EdinburghNLP/nematus/
 * https://github.com/mila-iqia/blocks
 * https://github.com/moses-smt/mosesdecoder
+* https://www.mdbg.net/chinese/dictionary?page=cedict
