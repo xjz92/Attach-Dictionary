@@ -61,11 +61,11 @@ We share the dictionary files that were used in our paper in the folder ./nmt/da
 
 ## References
 
-Parts of code/scripts are borrowed/inspired from:  
-
-* https://github.com/pytorch/fairseq
-* https://github.com/tensorflow/tensor2tensor
-* https://github.com/EdinburghNLP/nematus/
-* https://github.com/mila-iqia/blocks
-* https://github.com/moses-smt/mosesdecoder
+Original Witwicky Base for the code:  
+* https://github.com/tnq177/witwicky
+Cedict dictionary comes from:
 * https://www.mdbg.net/chinese/dictionary?page=cedict
+CiHai dictionary comes from:
+* http://download.huzheng.org/zh_CN/
+Freedict dictionary comes from:
+* http://download.huzheng.org/freedict.de/
