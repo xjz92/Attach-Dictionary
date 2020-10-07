@@ -96,18 +96,13 @@ class Trainer(object):
         newarray=numpy.zeros([toks.shape[0], toks.shape[1]],dtype=numpy.int32)
         for line, tokline in enumerate(toks):
             for count, intok in enumerate(tokline):
-                #print(intok,tokline)
-                #try:
                 newarray[line,count]=int(str(intok).split('_')[0])
-                #except:
-                    #print(intok,str(intok).split('_')[0])
         return(torch.from_numpy(newarray).type(torch.long))
         
     def remove_tags(self, toks):
         newarray=numpy.zeros([toks.shape[0], toks.shape[1]],dtype=numpy.int32)
         for line, tokline in enumerate(toks):
             for count, intok in enumerate(tokline):
-                #print('\nhere src side:',intok,tokline,toks)
                 newarray[line,count]=int(str(intok).split('_')[0])    
         return(torch.from_numpy(newarray).type(torch.long))
    
@@ -142,7 +137,6 @@ class Trainer(object):
         self.optimizer.step()
 
         # update training stats
-        #num_words = (targets_cuda != ac.PAD_ID).cpu().detach().numpy().sum()
         num_words = (targets_temp != ac.PAD_ID).numpy().sum()
 
         loss = loss.cpu().detach().numpy()

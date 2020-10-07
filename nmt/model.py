@@ -35,14 +35,14 @@ class Model(nn.Module):
         max_pos_length = self.config['max_pos_length']
         learned_pos = self.config['learned_pos']
         dic_learned_pos = self.config['dict_learned_pos']
-        concate_pos=self.config['concate_pos']
+
         self.load_joint_vocab()
         self.load_dictionary()
         
         # get positonal embedding
         if self.config['split_pos_encoding']:
             self.pos_embedding = ut.get_split_positional_encoding(embed_dim, max_pos_length)
-	    #self.dict_pos_embedding
+
         else:
             if not learned_pos:
                 self.pos_embedding = ut.get_positional_encoding(embed_dim, max_pos_length)
@@ -125,7 +125,7 @@ class Model(nn.Module):
                 if(other.endswith('NA')):
                     def_word=other[0:-3]
                     def_pos='NA'
-                    #print('splitting: ',old_intok,' into:',intok,word,def_word,def_pos)
+
                 else:
                     splitted=other.split('_')
                     if(len(splitted)==2):
@@ -136,7 +136,7 @@ class Model(nn.Module):
                         def_pos=other[2:]  
                     else:
                         def_word, def_pos=other.rsplit('_',1)
-                        #raise Exception('Unaccounted splitting condition for:',old_intok, splitted)                                               
+                                              
                 intok=torch.tensor(int(intok)).to(device)
             else:
                 intok=torch.tensor(int(intok)).to(device)
@@ -197,11 +197,11 @@ class Model(nn.Module):
             return word_embeds
         appends_sent=torch.cat([pad_emb]*mults)
         if(dimen==0):
-            #print(word_embeds, appends_sent)
+
             new_embeds=torch.cat((word_embeds,appends_sent),0)
         elif(dimen==1):
             new_embeds=[]
-            #print('appendings dim:',appends_sent.size())
+
             for batch in word_embeds:
                 batch_emb=torch.cat((batch,appends_sent),0)
                 new_embeds=self.combine_tensor(batch_emb,new_embeds)     
@@ -233,10 +233,8 @@ class Model(nn.Module):
                                   
             if(len(plain_embed)>0 and new_max_len!=len(plain_sent)):
                 new_max_len=max(len(plain_sent),plain_embed.size()[1])
-                #print('before resizing:',plain_embed,plain_sent)
                 plain_embed = self.resize_maxlen(plain_embed,new_max_len,pads,1)
-                plain_sent = self.resize_maxlen(plain_sent,new_max_len,pads,0)
-                #print('after resizing:',plain_embed.size(),plain_sent.size())           
+                plain_sent = self.resize_maxlen(plain_sent,new_max_len,pads,0)          
             plain_embed=self.combine_tensor(plain_sent,plain_embed)    
             word_embed=self.combine_tensor(sent,word_embed)       
         word_embeds = word_embed.to(device)
@@ -289,14 +287,9 @@ class Model(nn.Module):
         return logits
 
     def beam_decode(self, src_toks_cpu, src_toks, device='cuda:0'):
-        encoder_mask = (src_toks == ac.PAD_ID).unsqueeze(1).unsqueeze(2) # [bsz, 1, 1, max_src_len]
-        
-        #encoder_inputs, unkcount_enc, none_count_enc = self.get_embinput2(src_toks_cpu, src_toks, device, is_src=True) 
-        encoder_inputs, plan_emb = self.get_input3(src_toks_cpu, device, is_src=True)
-        #encoder_inputs = self.get_input(src_toks, is_src=True)          
+        encoder_mask = (src_toks == ac.PAD_ID).unsqueeze(1).unsqueeze(2) # [bsz, 1, 1, max_src_len]        
+        encoder_inputs, plan_emb = self.get_input3(src_toks_cpu, device, is_src=True)        
         encoder_outputs = self.encoder(encoder_inputs, encoder_mask)
-        #max_lengths = torch.sum(src_toks != ac.PAD_ID, dim=-1).type(src_toks.type()) + 50 
-        #print('Old max len size is: ',src_toks.size(),' new max len size is: ',plan_emb.size())
         max_lengths = torch.sum(plan_emb != ac.PAD_ID, dim=-1).type(src_toks.type()) + 50 
             
         def get_trg_inp(ids, time_step):
@@ -311,7 +304,6 @@ class Model(nn.Module):
             return word_embeds + pos_embeds
 
         def logprob(decoder_output):
-            #print('From logprob\n\n')
             return F.log_softmax(self.logit_fn(decoder_output,from_beam=True), dim=-1)
 
         return self.decoder.beam_decode(encoder_outputs, encoder_mask, get_trg_inp, logprob, ac.BOS_ID, ac.EOS_ID, max_lengths, beam_size=self.config['beam_size'], alpha=self.config['beam_alpha'])

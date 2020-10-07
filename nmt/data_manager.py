@@ -28,8 +28,6 @@ class DataManager(object):
         self.word_dropout = config['word_dropout']
         self.batch_sort_src = config['batch_sort_src']
         self.max_train_length = config['max_train_length']
-        self.dict_mode=config['dict_mode']
-        self.dict_method=config['dict_add_method']
         self.data_dir=config['data_dir']
         self.src_dict_ent=config['src_dict_ent']
         self.src_dict_def=config['src_dict_def']
@@ -107,7 +105,6 @@ class DataManager(object):
             else:
                 self.dict[entry]=defini
             lastent=entry            
-            #self.dict[ents.strip('\n')]=defs.strip('\n')
             
         
         for item in self.dict:
@@ -335,11 +332,7 @@ class DataManager(object):
                     src_ids,dict_appends = self.convert_data_to_ids(src_toks,nobpe_src,True)#+ [ac.EOS_ID] 	
                     trg_ids,_ = self.convert_data_to_ids(trg_toks,nobpe_trg,False)
                     total_appends+=dict_appends
-                    '''#Change 1: replaced following lines
-                    src_ids = [self.src_vocab.get(w, ac.UNK_ID) for w in src_toks] + [ac.EOS_ID]
-                    trg_ids = [ac.BOS_ID] + [self.trg_vocab.get(w, ac.UNK_ID) for w in trg_toks]
-                    '''
-                    
+
                     tok_count += max(len(src_ids), len(trg_ids)) + 1
                     src_ids = map(str, src_ids)
                     trg_ids = map(str, trg_ids)
@@ -360,22 +353,17 @@ class DataManager(object):
                 word_id=self.src_vocab.get(w, ac.UNK_ID)
             else:
                 word_id=self.trg_vocab.get(w, ac.UNK_ID)
-            #if(out==ac.UNK_ID):#only doing this to unk tokens or all
+
             out=str(word_id)+'_'+str(ind)+'_'+w+'_'+'NA'   
             ids_outs.append(out) 
             if(w in self.dict):
                 if(word_id==3 or self.apply_dict_all):
                     dict_append.append((w,ind))
                 
-        if(not self.dict_skip):
-            #print('appending')       
+        if(not self.dict_skip):      
             for item in dict_append:
                 w,ind=item
-                #if(len(self.dict[w].split())+len(ids_outs)<1024-50):
                 for def_pos,def_word in enumerate(self.dict[w].split()):
-                    #if('_' in def_word):
-                        #def_word=def_word.replace('_')
-                        #raise Exception('bad word', def_word)
                     def_write=str(3)+'_'+str(ind)+'_'+def_word+'_'+str(def_pos)#  
                     ids_outs.append(def_write)              
         
@@ -416,13 +404,9 @@ class DataManager(object):
         src_input_batch = numpy.empty([batch_size, max_src_length],dtype=object)
         trg_input_batch = numpy.empty([batch_size, max_trg_length],dtype=object)
         trg_target_batch = numpy.empty([batch_size, max_trg_length],dtype=object)
-        '''#Change 2: replaced the following lines to have numpy of strings
-        src_input_batch = numpy.zeros([batch_size, max_src_length], dtype=numpy.int32)
-        trg_input_batch = numpy.zeros([batch_size, max_trg_length], dtype=numpy.int32)
-        trg_target_batch = numpy.zeros([batch_size, max_trg_length], dtype=numpy.int32)
-        '''#Change 3 replaced ac.PAD_ID and ac.EOS_ID with str versions
+
         for i in range(batch_size):
-            #print(max_src_length - b_src_seq_length[i],'\n\n')
+
             if(max_src_length - b_src_seq_length[i]>0):
                 src_input_batch[i] = b_src_input[i] + (max_src_length - b_src_seq_length[i]) * [str(ac.PAD_ID)]
             else:
@@ -500,10 +484,7 @@ class DataManager(object):
                 
                 _src_input = list(map(str, _src_input))
                 _trg_input = list(map(str, _trg_input))
-                '''#Change 4 changed from int to str
-                _src_input = list(map(int, _src_input))
-                _trg_input = list(map(int, _trg_input))
-                '''
+
                 _src_len = len(_src_input)
                 _trg_len = len(_trg_input)
 
@@ -538,7 +519,6 @@ class DataManager(object):
                 src_inputs, src_seq_lengths, trg_inputs, trg_seq_lengths = self.process_n_batches(next_n_lines)
                 batches = self.prepare_batches(src_inputs, src_seq_lengths, trg_inputs, trg_seq_lengths, self.batch_size if alternate_batch_size is None else alternate_batch_size, mode=mode)
                 for batch_data in zip(*batches):
-                    #yield (torch.from_numpy(x).type(torch.long) for x in batch_data)
                     yield (x for x in batch_data)# change to str
 
     def get_trans_input(self, input_file):
@@ -548,11 +528,9 @@ class DataManager(object):
             total_appends=0
             for line in f:
                 toks = line.strip().split()
-                #print('line is:',line,'\ntoks is:',toks)
-                #data.append([self.src_vocab.get(w, ac.UNK_ID) for w in toks] + [ac.EOS_ID])
-                #data_lengths.append(len(data[-1]))
+
                 nobpe_src=self.remove_bpe_toks(toks)   
-                src_ids,dict_appends = self.convert_data_to_ids(toks,nobpe_src,True)#+ [ac.EOS_ID]
+                src_ids,dict_appends = self.convert_data_to_ids(toks,nobpe_src,True)
                 total_appends+=dict_appends 
                 data.append(src_ids)
                 data_lengths.append(len(data[-1])) 
@@ -576,13 +554,12 @@ class DataManager(object):
                     e_idx += 1
 
             max_in_batch = max(data_lengths[s_idx:e_idx])
-            #src_inputs = numpy.zeros((e_idx - s_idx, max_in_batch), dtype=numpy.int32)
             src_inputs = numpy.empty([e_idx - s_idx, max_in_batch],dtype=object)
             
             for i in range(s_idx, e_idx):
-                #src_inputs[i - s_idx] = list(data[i]) + (max_in_batch - data_lengths[i]) * [ac.PAD_ID]
+
                 src_inputs[i - s_idx] = list(map(str, data[i])) + (max_in_batch - data_lengths[i]) * [ac.PAD_ID]
             original_idxs = sorted_idxs[s_idx:e_idx]
             s_idx = e_idx
             yield src_inputs, original_idxs
-            #yield torch.from_numpy(src_inputs).type(torch.long), original_idxs
+
