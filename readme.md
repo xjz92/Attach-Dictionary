@@ -54,7 +54,7 @@ The ``src_dict_ent`` option should be filled with the name of the dictionary hea
 The ``src_dict_def`` option should be filled with the name of the dictionary defintions file. That file should be in the same directory as the training data.
 
 ## BPE version
-To run a BPE version of the code after applying BPE to all data files we recommend fusing headwords found in the headword file. The code we used to do this can be foudn in the ./nmt/data/tools/. To fuse The raw bpe data files should be in one folder and fused bpe  
+To run a BPE version of the code after applying BPE to all data files we recommend fusing headwords found in the headword file. The code we used to do this can be foudn in the ./nmt/data/tools/. To fuse the raw bpe data files should be in one folder and fused bpe data will be in another folder. ``python fuse_bpe_byfreq.py ./rawbpe_folder/ ./fusedbpe_folder/ src_lang dict_headwords_bpe_file dict_headwords_fuse_file freq_thres``  
 
 ## Dictionary files
 We share the dictionary files that were used in our paper in the folder ./nmt/data/
